@@ -17,62 +17,59 @@ const defaultValidationOptions: types.validationDefaultsDictionary = {
     errorMessage: 'Password must be at least 14 characters long and must contain at least one lowercase letter, one uppercase letter, one number, and one special character',
     regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$/
   },
-  confirmPassword: {
-    errorMessage: 'Passwords do not match',
-  },
   phoneNumber: {
-    min: 10,
-    max: 10,
-    errorMessage: 'Please use a valid 10-digit phone number',
-    regex: /^[1-9]\d{9}$/
+    min: 7,
+    max: 15,
+    errorMessage: 'Please use a valid phone number',
+    regex: /^\d+$/
   }
 }
 const username = 'hello';
 const password = 'secret';
 const testInputs = [username, password]
 
-export default {
-  validateInput: (
-    setError: (error: string) => void,
-    input: string | number,
-    inputType: string,
-    errorMessage?: string,
-    min?: number,
-    max?: number,
-    regex?: RegExp
-  ): boolean => {
-    setError('');
-    input = input.toString();
 
-    // assign default values if necessary
-    min = min ? min : defaultValidationOptions[inputType].min;
-    max = max ? max : defaultValidationOptions[inputType].max;
-    errorMessage = errorMessage ? errorMessage : defaultValidationOptions[inputType].errorMessage;
-    regex = regex ? regex : defaultValidationOptions[inputType].regex;
+const validateInput = (
+  setError: (error: string) => void,
+  input: string | number,
+  inputType: string,
+  errorMessage?: string,
+  min?: number,
+  max?: number,
+  regex?: RegExp
+): boolean => {
+  setError('');
+  input = input.toString();
 
-    if (input.length > max || input.length < min || (regex && !regex.test(input))) {
-      setError(errorMessage);
-      return false;
-    }
-    return true;
-  },
-  submitForm: async (
-    setError: (error: string) => void,
-    inputFields: Record<string, string>[],
-    endpoint: string,
-    failureMessage: string,
+  // assign default values if necessary
+  min = min ? min : defaultValidationOptions[inputType].min;
+  max = max ? max : defaultValidationOptions[inputType].max;
+  errorMessage = errorMessage ? errorMessage : defaultValidationOptions[inputType].errorMessage;
+  regex = regex ? regex : defaultValidationOptions[inputType].regex;
 
-  ):Promise<void> => {
-    setError('');
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        body: JSON.stringify(inputFields),
-        credentials: 'include'
-      });
-      if (!response.ok) throw new Error();
-    } catch (err) {
-      setError(failureMessage);
-    }
+  if (input.length > max || input.length < min || (regex && !regex.test(input))) {
+    setError(errorMessage);
+    return false;
+  }
+  return true;
+}
+const submitForm = async (
+  setError: (error: string) => void,
+  inputFields: Record<string, string>[],
+  endpoint: string,
+  failureMessage: string,
+): Promise<void> => {
+  setError('');
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(inputFields),
+      credentials: 'include'
+    });
+    if (!response.ok) throw new Error();
+  } catch (err) {
+    setError(failureMessage);
   }
 }
+
+module.exports = {validateInput, submitForm};
