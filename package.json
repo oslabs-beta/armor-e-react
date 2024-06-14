@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -22,6 +22,9 @@
     "@storybook/react": "^8.1.6",
     "@storybook/react-webpack5": "^8.1.6",
     "@storybook/test": "^8.1.6",
+    "@testing-library/dom": "^10.1.0",
+    "@testing-library/react": "^16.0.0",
+    "@types/jest": "^29.5.12",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.12.0",
@@ -38,6 +41,7 @@
     "react-dom": "^18.3.1",
     "storybook": "^8.1.6",
     "tailwind": "^4.0.0",
+    "ts-jest": "^29.1.4",
     "typescript": "^5.4.5"
   },
   "peerDependencies": {
@@ -48,5 +52,8 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
+  },
+  "dependencies": {
+    "jest": "^29.7.0"
   }
 }

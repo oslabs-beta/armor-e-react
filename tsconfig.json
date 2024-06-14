@@ -6,6 +6,7 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "forceConsistentCasingInFileNames": false,
   },
   "include": ["src/**/*"],
 }
