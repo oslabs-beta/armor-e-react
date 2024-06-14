@@ -1,9 +1,9 @@
 import React, { useState, FormEvent } from 'react';
 import './App.css';
-import UsernameInput from './UsernameInput.tsx';
-import EmailInput from './EmailInput.tsx';
-import PasswordInput from './PasswordInput.tsx';
-import ErrorMessage from './ErrorMessage.tsx';
+import UsernameInput from './UsernameInput';
+import EmailInput from './EmailInput';
+import PasswordInput from './PasswordInput';
+import ErrorMessage from './ErrorMessage';
 
 const App: React.FC = () => {
   const [username, setUsername] = useState<string>('');
