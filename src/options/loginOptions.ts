@@ -53,6 +53,7 @@ const validateInput = (
   }
   return true;
 }
+
 const submitForm = async (
   setError: (error: string) => void,
   inputFields: Record<string, string>[],
@@ -66,6 +67,7 @@ const submitForm = async (
       body: JSON.stringify(inputFields),
       credentials: 'include'
     });
+    console.log({ok: response.ok})
     if (!response.ok) throw new Error();
   } catch (err) {
     setError(failureMessage);
