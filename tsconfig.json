@@ -6,6 +6,11 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "noImplicitAny": true,
+    "lib": [
+      "ES2021"
+    ]
   },
-  "include": ["src/**/*"],
+  "include": [
+    "src/**/*"
+  ],
 }

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import UsernameInput from './UsernameInput';
+import UsernameInput from '../components/Username/UsernameInput';
 
 const meta = {
   component: UsernameInput,

@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import EmailInput from './EmailInput';
+import ErrorMessage from '../components/ErrorMessage/ErrorMessage';
 
 const meta = {
-  component: EmailInput,
-} satisfies Meta<typeof EmailInput>;
+  component: ErrorMessage,
+} satisfies Meta<typeof ErrorMessage>;
 
 export default meta;
 
@@ -12,7 +12,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    email: "email",
-    onEmailChange: () => {}
+    message: "message"
   }
 };

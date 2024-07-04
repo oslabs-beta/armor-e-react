@@ -1,4 +1,4 @@
-import * as types from '../types';
+import * as types from '../templates/login-signup-template/types';
 
 const defaultValidationOptions: types.validationDefaultsDictionary = {
   username: {
@@ -24,12 +24,8 @@ const defaultValidationOptions: types.validationDefaultsDictionary = {
     regex: /^\d+$/
   }
 }
-const username = 'hello';
-const password = 'secret';
-const testInputs = [username, password]
 
-
-const validateInput = (
+export const validateInput = (
   setError: (error: string) => void,
   input: string | number,
   inputType: string,
@@ -54,9 +50,9 @@ const validateInput = (
   return true;
 }
 
-const submitForm = async (
+export const submitForm = async (
   setError: (error: string) => void,
-  inputFields: Record<string, string>[],
+  inputFields: Record<string, string>,
   endpoint: string,
   failureMessage: string,
 ): Promise<void> => {
@@ -67,11 +63,17 @@ const submitForm = async (
       body: JSON.stringify(inputFields),
       credentials: 'include'
     });
-    console.log({ok: response.ok})
     if (!response.ok) throw new Error();
   } catch (err) {
+    console.log({err});
     setError(failureMessage);
   }
 }
 
-module.exports = {validateInput, submitForm};
+export const showValidationRequirements = (
+  
+): void => {
+
+}
+
+

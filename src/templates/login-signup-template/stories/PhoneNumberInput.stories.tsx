@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import PhoneNumberInput from './PhoneNumberInput';
+import PhoneNumberInput from '../components/PhoneNumber/PhoneNumberInput';
 
 const meta = {
   component: PhoneNumberInput,

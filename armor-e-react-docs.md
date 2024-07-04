@@ -11,7 +11,7 @@
 The functionality of each Armor-E React component is enabled and configured by passing an object prop, options, to that component. The components are rendered with a default set of input fields and buttons, which can be added and removed by configuring the corresponding properties in options.
 
 ## Login and signup options
-Login and signup components can be configured to handle input validation, post requests, [@TODO: password breach protection, email verification, phone number verification, and ]. Each renderable input field can be enabled or disabled by setting the corresponding property to a boolean value. Assigning a field name to true renders the component without any additional functionality. Fields are required by default. To configure the functionality for a given input field, use the configuration object in place of a boolean.
+Login and signup components can be configured to handle input validation, post requests, [@TODO: password breach protection, email verification, phone number verification, and validation preview]. Each renderable input field can be enabled or disabled by setting the corresponding property to a boolean value. Assigning a field name to true renders the component without any additional functionality. Fields are required by default. To configure the functionality for a given input field, use the configuration object in place of a boolean.
 
 ### Options.[inputField] 
 **(boolean | Object)**
