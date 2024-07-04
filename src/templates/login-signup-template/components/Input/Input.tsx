@@ -1,63 +1,68 @@
 import React, { useState, useRef } from 'react';
 import { validateInput, submitForm } from '../../../../options/loginOptions';
-import type { validationDefaultsDictionary } from '../../types';
+import type { inputDefaults, inputType, inputOptions } from '../../types';
 import { InputProps } from '../../types';
 import './Input.css';
-import { NumberLiteralType } from 'typescript';
 
-const defaultValidationOptions: validationDefaultsDictionary = {
+const defaultValidationOptions: inputDefaults = {
   username: {
-    min: 3,
-    max: 20,
-    regex: /^[\w]+$/
+    validation: {
+      min: 3,
+      max: 20,
+      regex: /^[\w]+$/,
+      get errorMessage() {
+        return `Username must be between ${this.min} and ${this.max} characters and contain only numbers, letters, and underscores`;
+      },
+    },
+    placeholder: ' ',
+    required: true,
   },
   email: {
-    regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+    validation: {
+      regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+      errorMessage: 'Please provide a valid email address',
+    },
+    placeholder: ' ',
+    required: true,
   },
   password: {
-    min: 14,
-    max: 64,
-    regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$/
+    validation: {
+      min: 14,
+      max: 64,
+      regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$/,
+      get errorMessage() {
+        return `Password must be between ${this.min} and ${this.max} characters long and must contain at least one lowercase letter, one uppercase letter, one number, and one special character`;
+      },
+    },
+    placeholder: ' ',
+    required: true,
   },
   confirmPassword: {
-    min: undefined,
-    max: undefined,
+    validation: {
+      errorMessage: 'Passwords must match',
+    },
+    placeholder: ' ',
+    required: true,
   },
   phoneNumber: {
-    min: 7,
-    max: 15,
-    regex: /^\d+$/
+    validation: {
+      min: 7,
+      max: 15,
+      regex: /^\d+$/,
+      errorMessage: 'Please provide a valid email phone number',
+    },
+    placeholder: ' ',
+    required: true,
   },
-  getErrorMessage: (
-    inputType: string,
-    min?: number,
-    max?: number
-  ): string => {
-    switch (inputType) {
-      case 'username':
-        return `Username must be between ${min} and ${max} characters and contain only numbers, letters, and underscores`;
-      case 'email':
-        return 'Please provide a valid email address';
-      case 'password':
-        return `Password must be between ${min} and ${max} characters long and must contain at least one lowercase letter, one uppercase letter, one number, and one special character`;
-      case 'confirmPassword':
-        return 'Passwords must match';
-      case 'phoneNumber':
-        return 'Please provide a valid phone number';
-      default:
-        return 'Input invalid';
-    }
-  }
 }
 
 const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, showPassword, autocomplete, passwordValue }) => {
-  const [backgroundColor, setBackgroundColor] = useState<string>('');
-  const [error, setError] = useState<string>('');
+  const [backgroundColor, setBackgroundColor] = useState<string>(''); // background color for input field indicates valid/invalid input
+  const [error, setError] = useState<string>(''); // a local error message for this input field
 
-  const inputRef = useRef(null)
+  const inputRef = useRef(null); // a ref to the returned input DOM element
 
-
-  const type = (() => {
+  const type = (() => { // gets the value of the type prop for the returned input component
     if (showPassword) return 'text';
     if (inputType === 'email') return 'email';
     if (inputType === 'phoneNumber') return 'tel';
@@ -65,37 +70,48 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
     return 'text';
   })();
 
-  const label = (() => {
+  const label = (() => { // gets the value of the label for the input field
     let output: string = inputType[0].toUpperCase() + inputType.slice(1);
     output = output.replaceAll(/[A-Z]/g, (char) => ' ' + char);
     return output.trimStart();
   })();
 
+  // gets values for input options from defaults and passed in props
   const [min, max, regex, isRequired, errorMessage, placeholder] =
     ((): [number, number, RegExp, boolean, string, string] => {
-      // get default validation values 
-      let errorMessage: string;
-      let min: number = defaultValidationOptions[inputType].min;
-      let max: number = defaultValidationOptions[inputType].max;
-      let regex = defaultValidationOptions[inputType].regex;
-      let isRequired: boolean = true; // input fields are required by default
 
-      // update validation options
-      if (options.required === false) isRequired = false;
-      let placeholder: string = options.placeholder || '';
-      if (typeof options === 'object') {
-        if (options.validation) {
-          min = options.validation.min || min;
-          max = options.validation.max || max;
-          regex = options.validation.regex || regex;
-          errorMessage = options.validation.errorMessage;
+      // gets default values from dictionary
+      const getDefaultValues = (): [number, number, RegExp, boolean, string, string] => {
+        const defaultOptions: inputOptions = defaultValidationOptions[inputType as inputType];
+        if (inputType === 'confirmPassword') {
+          // create regex to match password value, escape special characters
+          const matchPasswordsRegex: string = passwordValue.replaceAll(/[\^\$\\\.\*\+\?\(\)\[\]\{\}\|\/]/g, (unescaped) => `\\${unescaped}`);
+          defaultOptions.validation.regex = new RegExp(`(${matchPasswordsRegex})`);
         }
+        const { min, max, regex, errorMessage } = defaultOptions.validation;
+        const isRequired: boolean = defaultOptions.required;
+        const placeholder: string = defaultOptions.placeholder;
+        return [min, max, regex, isRequired, errorMessage, placeholder];
       }
-      console.log({inputType, passwordValue})
-      if(inputType === 'confirmPassword') regex = new RegExp(`(${passwordValue})`);
-      if (!errorMessage) errorMessage = defaultValidationOptions.getErrorMessage(inputType, min, max);
 
-      return [min, max, regex, isRequired, errorMessage, placeholder];
+      // gets values from options prop
+      const getValuesFromProp = (): [number, number, RegExp, boolean, string, string] => {
+        options = options as inputOptions;
+        const { min, max, regex, errorMessage } = options.validation || {};
+        const isRequired: boolean = options.required;
+        const placeholder: string = options.placeholder;
+        return [min, max, regex, isRequired, errorMessage, placeholder];
+      }
+
+      if (typeof options === 'boolean') return getDefaultValues();
+
+      const defaultValues = getDefaultValues();
+      const valuesFromProp = getValuesFromProp();
+      return valuesFromProp.map((value, index) => {
+        if (value !== undefined) return value;
+        return defaultValues[index];
+      }) as [number, number, RegExp, boolean, string, string];
+
     })();
 
 
@@ -143,7 +159,8 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
         autoComplete={autocomplete}
         minLength={min}
         maxLength={max}
-        pattern={regex.toString().slice(1, -1)} //remove the delimiters from regex
+        pattern={regex.toString().slice(1, -1)} //remove the delimiters (forward slashes) from regex
+      // onInvalid={(e) => inputRef.current.focus()}
       />
       <br />
       {error && <div style={{ color: 'red' }}>{error}</div>}

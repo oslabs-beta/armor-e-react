@@ -1,30 +1,36 @@
-interface validationDefaults {
-  min?: number,
-  max?: number,
-  regex?: RegExp,
+export type inputType = 'username' | 'password' | 'confirmPassword' | 'email' | 'phoneNumber';
+
+export interface inputOptions {
+  readonly validation?: {
+    min?: number,
+    max?: number,
+    regex?: RegExp,
+    errorMessage?: string
+  }
+  readonly required?: boolean,
+  readonly placeholder?: string
 };
 
-export interface validationDefaultsDictionary {
-  getErrorMessage: ((inputType: string, min: number, max: number) => string),
-  [index: string]: validationDefaults | ((inputType: string, min: number, max: number) => string),
-}
+export type inputDefaults = {
+  readonly [index in inputType]: inputOptions
+} 
 
 export interface InputProps {
   value: string,
   setValue: (value: string) => void,
-  options: boolean | Record<string, any>,
+  options: boolean | inputOptions,
   inputType?: string
   autocomplete?: string,
   showPassword?: boolean
   passwordValue?: string
-}
+};
 
 
 export interface FormProps {
-  username?: boolean | Record<string, any>,
-  password?: boolean | Record<string, any>,
-  email?: boolean | Record<string, any>,
-  confirmPassword?: boolean | Record<string, any>,
-  phoneNumber?: boolean | Record<string, any>,
+  username?: boolean | inputOptions,
+  password?: boolean | inputOptions,
+  email?: boolean | inputOptions,
+  confirmPassword?: boolean | inputOptions,
+  phoneNumber?: boolean | inputOptions,
   isLogin?: boolean,
-}
+};
