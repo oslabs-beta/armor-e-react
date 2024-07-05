@@ -4,7 +4,6 @@ import { InputProps } from '../../types';
 
 const PasswordInput: React.FC<InputProps> = ({ value, setValue, options, autocomplete, showPassword }) => {
   return (
-    <div>
       <Input
         value={value}
         setValue={setValue}
@@ -13,7 +12,6 @@ const PasswordInput: React.FC<InputProps> = ({ value, setValue, options, autocom
         autocomplete={autocomplete}
         showPassword={showPassword}
       />
-    </div>
   );
 };
 

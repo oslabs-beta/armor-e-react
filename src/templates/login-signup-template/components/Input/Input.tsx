@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react';
-import { validateInput, submitForm } from '../../../../options/loginOptions';
 import type { inputDefaults, inputType, inputOptions } from '../../types';
 import { InputProps } from '../../types';
 import './Input.css';

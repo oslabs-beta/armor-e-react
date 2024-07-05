@@ -4,7 +4,6 @@ import { InputProps } from '../../types';
 
 const PhoneNumberInput: React.FC<InputProps> = ({ value, setValue, setError, options, autocomplete }) => {
   return (
-    <div>
       <Input
         value={value}
         setValue={setValue}
@@ -12,7 +11,6 @@ const PhoneNumberInput: React.FC<InputProps> = ({ value, setValue, setError, opt
         inputType='phoneNumber'
         autocomplete={autocomplete}
       />
-    </div>
   );
 };
 

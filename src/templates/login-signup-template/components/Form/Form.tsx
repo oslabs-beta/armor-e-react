@@ -1,4 +1,4 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, FormEvent, useRef, useEffect } from 'react';
 import UsernameInput from '../Username/UsernameInput';
 import EmailInput from '../Email/EmailInput';
 import PasswordInput from '../Password/PasswordInput';
@@ -17,6 +17,8 @@ const Form: React.FC<FormProps> = ({ username, email, password, confirmPassword,
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
+  const formRef = useRef<HTMLFormElement>(null);
+
   // set default values for ommitted props
   const setDefaults = ((): void => {
     if (username === undefined) username = true;
@@ -24,7 +26,7 @@ const Form: React.FC<FormProps> = ({ username, email, password, confirmPassword,
     if (confirmPassword === undefined && !isLogin) confirmPassword = true;
   })();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const requestBody: Record<string, string> = {}
@@ -37,15 +39,31 @@ const Form: React.FC<FormProps> = ({ username, email, password, confirmPassword,
     submitForm(setErrorMessage, requestBody, isLogin ? '/login' : '/signup', 'failed to login');
   }
 
-  const handleShowPassword = (e) => {
-    if (e.target.checked) setShowPassword(true);
+  const handleShowPassword = (e: React.MouseEvent<HTMLInputElement>) => {
+    if ((e.target as HTMLInputElement).checked) setShowPassword(true);
     else setShowPassword(false);
   }
+
+  // focus the firt input field on initial component mount
+  useEffect(() => {
+    // performs a DFS to find first node with type input and focuses it
+    const focusFirstInput = (node: HTMLElement) => {
+      if (node.matches('input')){
+        node.focus();
+        return true;
+      }
+      const childNodes: HTMLElement[] = Array.from(node.children) as HTMLElement[];
+      return childNodes.some((child): boolean | undefined => (
+        focusFirstInput(child)
+      ));
+    } 
+    focusFirstInput(formRef.current);
+  }, [])
 
   return (
     <div className="login-container">
       <h2>{isLogin ? 'Log In' : 'Sign Up'}</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)} ref={formRef}>
         {
           username && <UsernameInput
             value={usernameValue}

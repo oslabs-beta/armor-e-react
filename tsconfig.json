@@ -7,8 +7,9 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "lib": [
-      "ES2021", 
-      "dom"
+      "ES2021",
+      "dom",
+      "DOM.Iterable"
     ]
   },
   "include": [

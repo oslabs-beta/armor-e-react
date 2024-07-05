@@ -4,7 +4,6 @@ import { InputProps } from '../../types';
 
 const EmailInput: React.FC<InputProps> = ({ value, setValue, setError, options, autocomplete }) => {
   return (
-    <div>
       <Input
         value={value}
         setValue={setValue}
@@ -12,7 +11,6 @@ const EmailInput: React.FC<InputProps> = ({ value, setValue, setError, options, 
         inputType='email'
         autocomplete={autocomplete}
       />
-    </div>
   );
 };
 
