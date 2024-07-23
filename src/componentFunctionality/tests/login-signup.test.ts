@@ -1,3 +1,4 @@
+//IGNORE THIS FILE FOR NOW
 const { validateInput, submitForm } = require('../loginOptions');
 let error: string = '';
 const setError = (errorMessage: string): void => {

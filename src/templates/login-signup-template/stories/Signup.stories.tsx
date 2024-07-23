@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 
-import App from '../components/Form/Form';
+import Signup from '../components/Signup/Signup';
 
 const meta = {
-  component: App,
-} satisfies Meta<typeof App>;
+  component: Signup,
+} satisfies Meta<typeof Signup>;
 
 export default meta;
 
@@ -20,10 +20,12 @@ export const Default: Story = {
       "validation": {
         "min": 6,
         "errorMessage": "'uh oh spaghetti o'"
-      }
+      },
+
+      "required": false
     },
 
-    confirmPassword: undefined,
-    isLogin: false
+    confirmPassword: true,
+    validationChecklist: true
   }
 };

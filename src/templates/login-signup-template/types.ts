@@ -1,36 +1,48 @@
 export type inputType = 'username' | 'password' | 'confirmPassword' | 'email' | 'phoneNumber';
 
-export interface inputOptions {
-  readonly validation?: {
-    min?: number,
-    max?: number,
-    regex?: RegExp,
-    errorMessage?: string
-  }
-  readonly required?: boolean,
-  readonly placeholder?: string
+export interface validationObject {
+  min?: number,
+  max?: number,
+  regex?: RegExp,
+  errorMessage?: string
+}
+export interface InputOptionsObject {
+  validation?: validationObject
+  required?: boolean,
+  placeholder?: string,
 };
 
-export type inputDefaults = {
-  readonly [index in inputType]: inputOptions
-} 
+export type InputDefaults = Readonly<{
+  [index in inputType]: InputOptionsObject
+}>
 
 export interface InputProps {
   value: string,
   setValue: (value: string) => void,
-  options: boolean | inputOptions,
-  inputType?: string
+  options: boolean | InputOptionsObject,
+  inputType?: inputType
   autocomplete?: string,
   showPassword?: boolean
   passwordValue?: string
 };
 
+export interface ChecklistItem {
+  condition: string,
+  regex?: RegExp,
+  min?: number,
+  max?: number,
+  isFulfilled: boolean
+}
+export type ValidationChecklist = {
+  [index in inputType]?: ChecklistItem[]
+}
 
 export interface FormProps {
-  username?: boolean | inputOptions,
-  password?: boolean | inputOptions,
-  email?: boolean | inputOptions,
-  confirmPassword?: boolean | inputOptions,
-  phoneNumber?: boolean | inputOptions,
+  username?: boolean | InputOptionsObject,
+  password?: boolean | InputOptionsObject,
+  email?: boolean | InputOptionsObject,
+  confirmPassword?: boolean | InputOptionsObject,
+  phoneNumber?: boolean | InputOptionsObject,
   isLogin?: boolean,
+  validationChecklist?: boolean | ValidationChecklist
 };

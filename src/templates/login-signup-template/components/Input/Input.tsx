@@ -1,65 +1,17 @@
-import React, { useState, useRef } from 'react';
-import type { inputDefaults, inputType, inputOptions } from '../../types';
-import { InputProps } from '../../types';
-import './Input.css';
+// this is the generic component for the input components. Those components are just a wrapper for this one
 
-const defaultValidationOptions: inputDefaults = {
-  username: {
-    validation: {
-      min: 3,
-      max: 20,
-      regex: /^[\w]+$/,
-      get errorMessage() {
-        return `Username must be between ${this.min} and ${this.max} characters and contain only numbers, letters, and underscores`;
-      },
-    },
-    placeholder: ' ',
-    required: true,
-  },
-  email: {
-    validation: {
-      regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-      errorMessage: 'Please provide a valid email address',
-    },
-    placeholder: ' ',
-    required: true,
-  },
-  password: {
-    validation: {
-      min: 14,
-      max: 64,
-      regex: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^a-zA-Z\d]).+$/,
-      get errorMessage() {
-        return `Password must be between ${this.min} and ${this.max} characters long and must contain at least one lowercase letter, one uppercase letter, one number, and one special character`;
-      },
-    },
-    placeholder: ' ',
-    required: true,
-  },
-  confirmPassword: {
-    validation: {
-      errorMessage: 'Passwords must match',
-    },
-    placeholder: ' ',
-    required: true,
-  },
-  phoneNumber: {
-    validation: {
-      min: 7,
-      max: 15,
-      regex: /^\d+$/,
-      errorMessage: 'Please provide a valid email phone number',
-    },
-    placeholder: ' ',
-    required: true,
-  },
-}
+
+import React, { useState, useRef } from 'react';
+import type { inputType, InputOptionsObject } from '../../types';
+import { InputProps, validationObject } from '../../types';
+import { InputOptions } from '../../../../componentFunctionality/loginFunctions';
+import './Input.css';
 
 const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, showPassword, autocomplete, passwordValue }) => {
   const [backgroundColor, setBackgroundColor] = useState<string>(''); // background color for input field indicates valid/invalid input
   const [error, setError] = useState<string>(''); // a local error message for this input field
 
-  const inputRef = useRef(null); // a ref to the returned input DOM element
+  const inputRef = useRef(null);
 
   const type = (() => { // gets the value of the type prop for the returned input component
     if (showPassword) return 'text';
@@ -75,43 +27,10 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
     return output.trimStart();
   })();
 
-  // gets values for input options from defaults and passed in props
-  const [min, max, regex, isRequired, errorMessage, placeholder] =
-    ((): [number, number, RegExp, boolean, string, string] => {
-
-      // gets default values from dictionary
-      const getDefaultValues = (): [number, number, RegExp, boolean, string, string] => {
-        const defaultOptions: inputOptions = defaultValidationOptions[inputType as inputType];
-        if (inputType === 'confirmPassword') {
-          // create regex to match password value, escape special characters
-          const matchPasswordsRegex: string = passwordValue.replaceAll(/[\^\$\\\.\*\+\?\(\)\[\]\{\}\|\/]/g, (unescaped) => `\\${unescaped}`);
-          defaultOptions.validation.regex = new RegExp(`(${matchPasswordsRegex})`);
-        }
-        const { min, max, regex, errorMessage } = defaultOptions.validation;
-        const isRequired: boolean = defaultOptions.required;
-        const placeholder: string = defaultOptions.placeholder;
-        return [min, max, regex, isRequired, errorMessage, placeholder];
-      }
-
-      // gets values from options prop
-      const getValuesFromProp = (): [number, number, RegExp, boolean, string, string] => {
-        options = options as inputOptions;
-        const { min, max, regex, errorMessage } = options.validation || {};
-        const isRequired: boolean = options.required;
-        const placeholder: string = options.placeholder;
-        return [min, max, regex, isRequired, errorMessage, placeholder];
-      }
-
-      if (typeof options === 'boolean') return getDefaultValues();
-
-      const defaultValues = getDefaultValues();
-      const valuesFromProp = getValuesFromProp();
-      return valuesFromProp.map((value, index) => {
-        if (value !== undefined) return value;
-        return defaultValues[index];
-      }) as [number, number, RegExp, boolean, string, string];
-
-    })();
+  // get values from options and default
+  const updatedOptions = new InputOptions(inputType, options, passwordValue);
+  const { required, placeholder } = updatedOptions;
+  const { min, max, regex, errorMessage } = updatedOptions.validation;
 
 
   const onChangeFunction = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -122,13 +41,13 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
   }
 
   const focusOutFunction = () => {
-    if (value === '' && isRequired) {
+    if (value === '' && required) {
       setError('Required field');
       setBackgroundColor('rgb(255, 96, 96)');
     }
   };
 
-  const focusInFunction = () => {
+  const focusInFunction = (e: React.FocusEvent<HTMLInputElement, Element>) => {
     setError('');
     if (inputRef.current.matches('input:invalid')) {
       setError(errorMessage);
@@ -140,7 +59,7 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
       <label htmlFor={inputType}>
         {label}:
         <span style={{ color: 'red' }}>
-          {isRequired ? ' *' : ''}
+          {required ? ' *' : ''}
         </span>
       </label>
       <br />
@@ -154,7 +73,7 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
         onFocus={focusInFunction}
         onBlur={focusOutFunction}
         placeholder={placeholder}
-        required={isRequired}
+        required={required}
         autoComplete={autocomplete}
         minLength={min}
         maxLength={max}
