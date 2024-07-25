@@ -48,5 +48,8 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.12.1"
   }
 }
