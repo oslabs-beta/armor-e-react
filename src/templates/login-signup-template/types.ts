@@ -58,6 +58,10 @@ export type fieldValues = {
   [index in inputType]: string
 }
 
+export interface LinkObject {
+  path?: string,
+  text?: string
+}
 
 export interface FormProps {
   username?: boolean | InputOptionsObject,
@@ -73,5 +77,6 @@ export interface FormProps {
   buttonText?: string,
   textColor?: string,
   showInputLabels?: boolean,
-  logoPath?: string
+  logoPath?: string,
+  alternativeLink?: boolean | LinkObject
 };

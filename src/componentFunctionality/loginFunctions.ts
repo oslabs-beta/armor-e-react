@@ -1,8 +1,6 @@
 import * as convert from 'color-convert';
-// // functions and classes 
-
-import { InputOptionsObject, validationObject, inputType, ValidationChecklist } from "../templates/login-signup-template/types";
 import { KEYWORD } from 'color-convert/conversions';
+import { InputOptionsObject, validationObject, inputType, ValidationChecklist } from "../templates/login-signup-template/types";
 export const submitForm = async (
   setError: (error: string) => void,
   inputFields: Record<string, string>,
@@ -26,7 +24,6 @@ export const submitForm = async (
   }
 }
 
-// I might end up splitting this into multiple classes for each input field that all extend this class with the decorator pattern. 
 export class InputOptions implements InputOptionsObject {
   validation?: validationObject;
   required?: boolean;
@@ -166,7 +163,7 @@ export class usernameOptions extends InputOptions {
 
 }
 
-// // takes a color represented by keyword, rgb, or hex and converts it to hex
+// takes a color represented by keyword, rgb, or hex and converts it to hex
 const convertColorToHex = (color: string): any => {
   if (color[0] === '#') return color;
   if (color.slice(0, 3) === 'rgb') {
@@ -181,7 +178,6 @@ const convertColorToHex = (color: string): any => {
   }
   return '#' + convert.keyword.hex(color as KEYWORD);
 }
-
 /*
 lightens or darkens a color based on the amount specified by percent. 
 higher numbers lighten the color, and lower numbers darken them

@@ -1,6 +1,6 @@
 
 
-div:has(.header-form-footer) {
+.auth-form-container {
   border: 1px solid black;
   height: fit-content;
   width: fit-content;
@@ -13,7 +13,7 @@ div:has(.header-form-footer) {
   border-radius: 7px;
 }
 
-.form-container {
+.auth-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -54,10 +54,7 @@ div:has(.header-form-footer) {
   margin-bottom: 30px;
 }
 
-.auth-options input {
-}
-
-.auth-options a {
+.auth-options a, .auth-footer a {
   color: inherit;
 }
 

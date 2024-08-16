@@ -1,53 +1,88 @@
-:root {
-  --primary: rgb(70, 70, 252);
-  --secondary: pink;
-}
 
 
-.form-group {
-  padding-bottom: 5px;
+.auth-form-container {
+  border: 1px solid black;
+  height: fit-content;
+  width: fit-content;
+  padding: 0px;
+  margin: 0px;
   display: flex;
-  flex-direction: row-reverse;
-  gap: 5px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 7px;
 }
 
-.login-signup-container {
+.auth-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid white;
   border-radius: 5px;
-  width:fit-content;
-  padding: 10px;
+  max-width: 350px;
+  width: 100vw;
+  padding: 25px;
   height: fit-content;
   backdrop-filter: blur(10px);
   align-self: center;
   justify-self: center;
-  background-color: white;
-  color: blue;
+  box-sizing: border-box;
 }
 
-button[type="submit"] {
+.submit-button {
   width: 100%;
-  background-image: linear-gradient(30deg, var(--primary), var(--secondary));
-  border-radius: 8px;
+  height: 64px; 
+  font-weight: 800;
+  border-radius: 11px;
   font-size: 18px;
+  cursor: pointer;
+  border-width: 0 0 7px 0;
+  border-style: solid;
+  text-shadow: 0 1px 0px black;
 }
 
 .inputImage {
   height: 30px;
 }
 
-input {
-  border-width: 0px;
+.form-container form {
+  width: 100%;
 }
 
-div:has(.login-signup-container) {
+.auth-options {
   display: flex;
-  flex-direction: row;
-  background-image: linear-gradient(30deg, var(--primary), var(--secondary));
-  width: 100%;
-  height: 100vh;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
+  margin-bottom: 30px;
 }
+
+.auth-options a, .auth-footer a {
+  color: inherit;
+}
+
+.auth-logo {
+  width: 60px;
+  height: 60px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  /* position: absolute; */
+}
+
+.auth-header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+}
+
+.auth-header h2 {
+  text-align: center;
+  margin: 0;
+  align-self: self-end;
+}
+
+.auth-footer {
+  text-align: center;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+

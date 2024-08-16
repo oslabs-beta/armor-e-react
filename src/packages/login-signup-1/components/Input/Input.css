@@ -1,25 +1,65 @@
-input:focus:valid {
-  background-color: rgb(120, 255, 120);
+.inputContainer:has(input:invalid:not(:placeholder-shown)) {
+  border-color: rgb(255, 96, 96);
 }
-input:invalid:not(:placeholder-shown) {
-  background-color: rgb(255, 96, 96);
+
+.inputContainer:has(input:focus:valid) {
+  border-color: rgb(120, 255, 120);
 }
-input:invalid:focus {
-  background-color: rgb(255, 96, 96);
-}
+
 input:focus {
   outline: none;
 }
-
 input {
-  border-style: solid;
-  height: 100%;
 }
 
 .inputContainer {
-  outline: 2px solid black;
-  display: flex;
+  outline: 1px solid #8f8f8f;
+  display: inline-flex;
   flex-direction: row;
   align-items: center;
-  border-radius: 8px;
+  border-radius: 3px;
+  gap: 5px; 
+  overflow: clip;
+  flex-grow: 1;
+  box-sizing: border-box;
+  padding: 0px;
+  width: 100%;
+  height: 40px;
+}
+
+.inputContainer:has(input:hover) {
+  outline-color: #cfcfcf;
+}
+
+.requiredContainer {
+  color: red;
+  vertical-align: top;
+}
+
+.show-password-button {
+  background-color: rgba(1, 1, 1, 0);
+  border-width: 0;
+  cursor: pointer;
+}
+.show-password-button img {
+  opacity: 0.8;
+}
+.show-password-button img:hover {
+  opacity: 1;
+}
+
+.input-group {
+  margin-bottom: 8px;
+}
+
+.inputContainer input {
+  border-style: solid;
+  height: 100%;
+  width: 100%;
+  border-width: 0px;
+  font-size: medium;
+}
+
+.auth-local-error {
+  font-size: large;
 }

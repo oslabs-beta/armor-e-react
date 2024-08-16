@@ -1,11 +1,8 @@
 // this is the generic component for both login and signup components. Those components are just a wrapper for this one
 
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
-import UsernameInput from '../Username/UsernameInput';
-import EmailInput from '../Email/EmailInput';
-import PasswordInput from '../Password/PasswordInput';
-import ConfirmPasswordInput from '../ConfirmPassword/ConfirmPasswordInput';
-import PhoneNumberInput from '../PhoneNumber/PhoneNumberInput';
+import Input from '../Input/Input';
+import FormStyles from '../Style/FormStyles';
 import ChecklistContainer from '../ValidationChecklist/ChecklistContainer';
 import { changeBrightness, submitForm, validationChecklistDefaults } from "../../../../componentFunctionality/loginFunctions";
 import type { FormProps, inputType, ValidationChecklist } from '../../types';
@@ -15,20 +12,21 @@ import './Form.css';
 
 const Form: React.FC<FormProps> = (props) => {
   const {
+    isLogin,
+    validationChecklist,
     username,
     email,
     password,
     confirmPassword,
     phoneNumber,
-    isLogin,
-    validationChecklist,
     primaryColor,
     secondaryColor,
+    textColor,
     title,
     buttonText,
-    textColor,
+    alternativeLink,
+    logoPath,
     showInputLabels,
-    logoPath
   } = props;
 
   const [usernameValue, setUsernameValue] = useState<string>('');
@@ -40,11 +38,6 @@ const Form: React.FC<FormProps> = (props) => {
   const [checklist, setChecklist] = useState<ValidationChecklist>(createValidationChecklist());
 
   const formRef = useRef<HTMLFormElement>(null);
-
-  const formDefaults = {
-    title: isLogin ? 'Log In' : 'Sign Up',
-    buttonText: buttonText || isLogin ? 'Log In' : 'Sign Up',
-  }
 
   const colors = (() => {
     const primary = primaryColor || '#312e2b';
@@ -61,6 +54,23 @@ const Form: React.FC<FormProps> = (props) => {
       secondaryLight: changeBrightness(secondary, 1.3),
       textLight: changeBrightness(text, 1.3),
       error: '#ffa3a3'
+    }
+  })();
+
+  const text = (() => {
+    let alternativeText = isLogin
+      ? 'Don\'t have an account yet? Sign up now!'
+      : 'Already have an account yet? Log in here!';
+    let alternativePath = isLogin ? '/login' : '/signup'
+    if (typeof alternativeLink === 'object') {
+      alternativeText = alternativeLink.text ? alternativeLink.text : alternativeText;
+      alternativePath = alternativeLink.path ? alternativeLink.path : alternativePath;
+    }
+    return {
+      title: title || isLogin ? 'Login' : 'Signup',
+      buttonText: buttonText || isLogin ? 'Log In' : 'Sign Up',
+      alternativePath,
+      alternativeText
     }
   })();
 
@@ -89,14 +99,6 @@ const Form: React.FC<FormProps> = (props) => {
     submitForm(setErrorMessage, requestBody, isLogin ? '/login' : '/signup', 'failed to login');
   }
 
-  const [primary, secondary, formTitle] = (() => {
-    const primary = primaryColor ? primaryColor : 'red';
-    const secondary = secondaryColor ? secondaryColor : 'blue';
-    let formTitle = isLogin ? 'Log In' : 'Sign Up';
-    if (title) formTitle = title;
-    return [primary, secondary, formTitle];
-  })()
-
   // focus the firt input field on initial component mount
   useEffect(() => {
     // performs a DFS to find first node with type input and focuses it
@@ -114,50 +116,24 @@ const Form: React.FC<FormProps> = (props) => {
   }, [])
 
   return (
-    <div
-      style={{
-        backgroundColor: colors.primary,
-        color: colors.text
-      }}>
-      <style>
-        {`
-        .submit-button {
-          background-color: ${colors.secondary};
-          color: ${colors.textLight};
-          border-color: ${colors.secondaryDark};
-        }
-        .submit-button:hover {
-          background-color: ${colors.secondaryLight};
-          border-color: ${colors.secondary};
-          }
-        .checkbox-container {
-          background-color: ${colors.primaryLight};
-        }
-        .auth-footer {
-          background-color: ${colors.primaryDark};
-          color: ${colors.text}
-        }
-        .auth-options {
-          accent-color: ${primaryColor};
-        }
-        `}
-      </style>
+    <div className='auth-form-container'>
+      <FormStyles colors={colors} />
       <div className='header-form-footer'>
         <div className='auth-header'>
           {logoPath && <img
             src={logoPath}
             className='auth-logo'
           />}
-          <h2>{formTitle}</h2>
+          <h2>{text.title}</h2>
           <div></div>
         </div>
-        <div className="form-container">
+        <div className="auth-form">
           <form
             onSubmit={(e) => handleSubmit(e)}
             ref={formRef}
           >
             {
-              username && <UsernameInput
+              username && <Input
                 value={usernameValue}
                 setValue={setUsernameValue}
                 options={username === undefined ? true : username}
@@ -165,11 +141,12 @@ const Form: React.FC<FormProps> = (props) => {
                 showLocalError={!validationChecklist}
                 colors={colors}
                 showLabel={showInputLabels}
+                inputType='username'
               />
             }
 
             {
-              email && <EmailInput
+              email && <Input
                 value={emailValue}
                 setValue={setEmailValue}
                 options={email}
@@ -177,11 +154,12 @@ const Form: React.FC<FormProps> = (props) => {
                 showLocalError={!validationChecklist}
                 colors={colors}
                 showLabel={showInputLabels}
+                inputType='email'
               />
             }
 
             {
-              phoneNumber && <PhoneNumberInput
+              phoneNumber && <Input
                 value={phoneNumberValue}
                 setValue={setPhoneNumberValue}
                 options={phoneNumber}
@@ -189,11 +167,12 @@ const Form: React.FC<FormProps> = (props) => {
                 showLocalError={!validationChecklist}
                 colors={colors}
                 showLabel={showInputLabels}
+                inputType='phoneNumber'
               />
             }
 
             {
-              password && <PasswordInput
+              password && <Input
                 value={passwordValue}
                 setValue={setPasswordValue}
                 options={password === undefined ? true : password}
@@ -201,11 +180,12 @@ const Form: React.FC<FormProps> = (props) => {
                 showLocalError={!validationChecklist}
                 colors={colors}
                 showLabel={showInputLabels}
+                inputType='password'
               />
             }
 
             {
-              confirmPassword && <ConfirmPasswordInput
+              confirmPassword && <Input
                 value={confirmPasswordValue}
                 setValue={setConfirmPasswordValue}
                 options={confirmPassword === undefined && !isLogin ? true : confirmPassword}
@@ -214,7 +194,8 @@ const Form: React.FC<FormProps> = (props) => {
                 showLocalError={!validationChecklist}
                 colors={colors}
                 showLabel={showInputLabels}
-                
+                inputType='confirmPassword'
+
               />
             }
             <div>{errorMessage}</div>
@@ -236,16 +217,15 @@ const Form: React.FC<FormProps> = (props) => {
             <button
               className='submit-button'
               type="submit"
-            >{isLogin ? 'Log In' : 'Sign Up'}</button>
+            >{text.buttonText}</button>
           </form>
         </div>
-        <div className='auth-footer'>
-          <a>
-            Don't have an account yet? Sign up now!
+        {alternativeLink && <div className='auth-footer'>
+          <a href={text.alternativePath}>
+            {text.alternativeText}
           </a>
-        </div>
+        </div>}
       </div>
-
       {validationChecklist && <ChecklistContainer
         checklist={checklist}
         fieldValues={{

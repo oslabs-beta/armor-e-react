@@ -19,7 +19,6 @@ const ChecklistContainer: React.FC<{
       {
         checklist.map((item, index) => {
           const fieldType = item.field;
-          console.log({confirmPasswordRegex})
           return (
             <
               ChecklistItem
