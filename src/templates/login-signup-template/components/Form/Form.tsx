@@ -6,83 +6,30 @@ import EmailInput from '../Email/EmailInput';
 import PasswordInput from '../Password/PasswordInput';
 import ConfirmPasswordInput from '../ConfirmPassword/ConfirmPasswordInput';
 import PhoneNumberInput from '../PhoneNumber/PhoneNumberInput';
-// import ValidationChecklistContainer from '../ValidationChecklist/ValidationChecklistContainer';
-import { submitForm } from "../../../../componentFunctionality/loginFunctions";
+import ChecklistContainer from '../ValidationChecklist/ChecklistContainer';
+import { changeBrightness, submitForm, validationChecklistDefaults } from "../../../../componentFunctionality/loginFunctions";
 import type { FormProps, inputType, ValidationChecklist } from '../../types';
 import './Form.css';
 
-// const validationChecklistDefaults: ValidationChecklist = {
-//   username: [
-//     {
-//       get condition() {
-//         return `Username must be ${this.min} to ${this.max} characters long`;
-//       },
-//       min: 3,
-//       max: 20,
-//       isFulfilled: false
-//     },
-//     {
-//       condition: 'Username must contain only letters, numbers, and underscores',
-//       regex: /^[\w]+$/,
-//       isFulfilled: false
-//     },
-//   ],
-//   email: [
-//     {
-//       condition: 'Valid email address',
-//       regex: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
-//       isFulfilled: false
-//     },
-//   ],
-//   password: [
-//     {
-//       get condition() {
-//         return `Password must be ${this.min} to ${this.max} characters long`;
-//       },
-//       min: 14,
-//       max: 64,
-//       isFulfilled: false
-//     },
-//     {
-//       condition: 'Password must contain a number',
-//       regex: /\d/,
-//       isFulfilled: false
-//     },
-//     {
-//       condition: 'Password must contain a lowercase letter',
-//       regex: /[a-z]/,
-//       isFulfilled: false
-//     },
-//     {
-//       condition: 'Password must contain an uppercase letter',
-//       regex: /[A-Z]/,
-//       isFulfilled: false
-//     },
-//     {
-//       condition: 'Password must contain a special character',
-//       regex: /[^a-zA-Z0-9]/,
-//       isFulfilled: false
-//     },
-//   ],
-//   confirmPassword: [
-//     {
-//       condition: 'Passwords must match',
-//       isFulfilled: false
-//     },
-//   ],
-//   phoneNumber: [
-//     {
-//       condition: 'Valid phone number',
-//       min: 7,
-//       max: 15,
-//       regex: /^\d+$/,
-//       isFulfilled: false
-//     }
-//   ]
-// }
+
 
 const Form: React.FC<FormProps> = (props) => {
-  const { username, email, password, confirmPassword, phoneNumber, isLogin, validationChecklist } = props;
+  const {
+    username,
+    email,
+    password,
+    confirmPassword,
+    phoneNumber,
+    isLogin,
+    validationChecklist,
+    primaryColor,
+    secondaryColor,
+    title,
+    buttonText,
+    textColor,
+    showInputLabels,
+    logoPath
+  } = props;
 
   const [usernameValue, setUsernameValue] = useState<string>('');
   const [emailValue, setEmailValue] = useState<string>('');
@@ -90,25 +37,44 @@ const Form: React.FC<FormProps> = (props) => {
   const [passwordValue, setPasswordValue] = useState<string>('');
   const [confirmPasswordValue, setConfirmPasswordValue] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [showPassword, setShowPassword] = useState<boolean>(false);
-  // const [checklist, setChecklist] = useState<ValidationChecklist>(setValidationChecklist());
+  const [checklist, setChecklist] = useState<ValidationChecklist>(createValidationChecklist());
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  // function setValidationChecklist(): ValidationChecklist {
-  //   const output: ValidationChecklist = {};
-  //   if (!validationChecklist) return output;
-  //   for (let inputType in validationChecklistDefaults) {
-  //     if (!props[inputType as inputType]) continue;
-  //     if (typeof validationChecklist === 'boolean' || !validationChecklist[inputType as inputType]) { // use defaults
-  //       output[inputType as inputType] = validationChecklistDefaults[inputType as inputType];
-  //     }
-  //     else { // use passed in values
-  //       output[inputType as inputType] = validationChecklist[inputType as inputType];
-  //     }
-  //   }
-  //   return output;
-  // };
+  const formDefaults = {
+    title: isLogin ? 'Log In' : 'Sign Up',
+    buttonText: buttonText || isLogin ? 'Log In' : 'Sign Up',
+  }
+
+  const colors = (() => {
+    const primary = primaryColor || '#312e2b';
+    const secondary = secondaryColor || 'maroon';
+    const text = textColor || '#e0e0e0';
+    return {
+      primary,
+      secondary,
+      text,
+      primaryDark: changeBrightness(primary, 0.7),
+      secondaryDark: changeBrightness(secondary, 0.7),
+      textDark: changeBrightness(text, 0.7),
+      primaryLight: changeBrightness(primary, 1.5),
+      secondaryLight: changeBrightness(secondary, 1.3),
+      textLight: changeBrightness(text, 1.3),
+      error: '#ffa3a3'
+    }
+  })();
+
+  function createValidationChecklist(): ValidationChecklist {
+    const output = [];
+    for (const item of validationChecklistDefaults) {
+      if (
+        props[item.field] === undefined
+        || props[item.field] === false
+      ) continue;
+      output.push(item)
+    }
+    return output;
+  }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -123,10 +89,13 @@ const Form: React.FC<FormProps> = (props) => {
     submitForm(setErrorMessage, requestBody, isLogin ? '/login' : '/signup', 'failed to login');
   }
 
-  const handleShowPassword = (e: React.MouseEvent<HTMLInputElement>) => {
-    if ((e.target as HTMLInputElement).checked) setShowPassword(true);
-    else setShowPassword(false);
-  }
+  const [primary, secondary, formTitle] = (() => {
+    const primary = primaryColor ? primaryColor : 'red';
+    const secondary = secondaryColor ? secondaryColor : 'blue';
+    let formTitle = isLogin ? 'Log In' : 'Sign Up';
+    if (title) formTitle = title;
+    return [primary, secondary, formTitle];
+  })()
 
   // focus the firt input field on initial component mount
   useEffect(() => {
@@ -145,69 +114,150 @@ const Form: React.FC<FormProps> = (props) => {
   }, [])
 
   return (
-    <div className="login-container">
-      <h2>{isLogin ? 'Log In' : 'Sign Up'}</h2>
-      <form onSubmit={(e) => handleSubmit(e)} ref={formRef}>
-        {
-          username && <UsernameInput
-            value={usernameValue}
-            setValue={setUsernameValue}
-            options={username === undefined ? true : username}
-            autocomplete={isLogin && 'username'}
-          />
+    <div
+      style={{
+        backgroundColor: colors.primary,
+        color: colors.text
+      }}>
+      <style>
+        {`
+        .submit-button {
+          background-color: ${colors.secondary};
+          color: ${colors.textLight};
+          border-color: ${colors.secondaryDark};
         }
+        .submit-button:hover {
+          background-color: ${colors.secondaryLight};
+          border-color: ${colors.secondary};
+          }
+        .checkbox-container {
+          background-color: ${colors.primaryLight};
+        }
+        .auth-footer {
+          background-color: ${colors.primaryDark};
+          color: ${colors.text}
+        }
+        .auth-options {
+          accent-color: ${primaryColor};
+        }
+        `}
+      </style>
+      <div className='header-form-footer'>
+        <div className='auth-header'>
+          {logoPath && <img
+            src={logoPath}
+            className='auth-logo'
+          />}
+          <h2>{formTitle}</h2>
+          <div></div>
+        </div>
+        <div className="form-container">
+          <form
+            onSubmit={(e) => handleSubmit(e)}
+            ref={formRef}
+          >
+            {
+              username && <UsernameInput
+                value={usernameValue}
+                setValue={setUsernameValue}
+                options={username === undefined ? true : username}
+                autocomplete={isLogin && 'username'}
+                showLocalError={!validationChecklist}
+                colors={colors}
+                showLabel={showInputLabels}
+              />
+            }
 
-        {
-          email && <EmailInput
-            value={emailValue}
-            setValue={setEmailValue}
-            options={email}
-            autocomplete={'email'}
-          />
-        }
+            {
+              email && <EmailInput
+                value={emailValue}
+                setValue={setEmailValue}
+                options={email}
+                autocomplete={'email'}
+                showLocalError={!validationChecklist}
+                colors={colors}
+                showLabel={showInputLabels}
+              />
+            }
 
-        {
-          phoneNumber && <PhoneNumberInput
-            value={phoneNumberValue}
-            setValue={setPhoneNumberValue}
-            options={phoneNumber}
-            autocomplete='tel'
-          />
-        }
+            {
+              phoneNumber && <PhoneNumberInput
+                value={phoneNumberValue}
+                setValue={setPhoneNumberValue}
+                options={phoneNumber}
+                autocomplete='tel'
+                showLocalError={!validationChecklist}
+                colors={colors}
+                showLabel={showInputLabels}
+              />
+            }
 
-        {
-          password && <PasswordInput
-            value={passwordValue}
-            setValue={setPasswordValue}
-            options={password === undefined ? true : password}
-            autocomplete={isLogin ? 'current-password' : 'new-password'}
-            showPassword={showPassword}
-          />
-        }
+            {
+              password && <PasswordInput
+                value={passwordValue}
+                setValue={setPasswordValue}
+                options={password === undefined ? true : password}
+                autocomplete={isLogin ? 'current-password' : 'new-password'}
+                showLocalError={!validationChecklist}
+                colors={colors}
+                showLabel={showInputLabels}
+              />
+            }
 
-        {
-          confirmPassword && <ConfirmPasswordInput
-            value={confirmPasswordValue}
-            setValue={setConfirmPasswordValue}
-            options={confirmPassword === undefined && !isLogin ? true : confirmPassword}
-            autocomplete={'new-password'}
-            showPassword={showPassword}
-            passwordValue={passwordValue}
-          />
-        }
-        <input
-          type='checkbox'
-          id='showPassword'
-          onClick={(e) => handleShowPassword(e)}
-        />
-        <label htmlFor='showPassword'>Show Password</label>
-        <div>{errorMessage}</div>
-        <button type="submit">{isLogin ? 'Log In' : 'Sign Up'}</button>
-      </form>
-      {/* <ValidationChecklistContainer
+            {
+              confirmPassword && <ConfirmPasswordInput
+                value={confirmPasswordValue}
+                setValue={setConfirmPasswordValue}
+                options={confirmPassword === undefined && !isLogin ? true : confirmPassword}
+                autocomplete={'new-password'}
+                passwordValue={passwordValue}
+                showLocalError={!validationChecklist}
+                colors={colors}
+                showLabel={showInputLabels}
+                
+              />
+            }
+            <div>{errorMessage}</div>
+            <div className='auth-options'>
+              <span>
+                <span className='checkboxContainer'>
+                  <input
+                    type='checkbox'
+                  />
+                </span>
+                Remember me
+              </span>
+              <span>
+                <a href='google.com'>
+                  Forgot password?
+                </a>
+              </span>
+            </div>
+            <button
+              className='submit-button'
+              type="submit"
+            >{isLogin ? 'Log In' : 'Sign Up'}</button>
+          </form>
+        </div>
+        <div className='auth-footer'>
+          <a>
+            Don't have an account yet? Sign up now!
+          </a>
+        </div>
+      </div>
+
+      {validationChecklist && <ChecklistContainer
         checklist={checklist}
-      /> */}
+        fieldValues={{
+          username: usernameValue,
+          email: emailValue,
+          password: passwordValue,
+          confirmPassword: confirmPasswordValue,
+          phoneNumber: phoneNumberValue,
+        }}
+      />}
     </div>
+
   );
 };
 

@@ -2,14 +2,30 @@
 
 
 import React, { useState, useRef } from 'react';
-import type { inputType, InputOptionsObject } from '../../types';
 import { InputProps, validationObject } from '../../types';
-import { InputOptions } from '../../../../componentFunctionality/loginFunctions';
+import { InputOptions, changeBrightness } from '../../../../componentFunctionality/loginFunctions';
 import './Input.css';
+import passwordImage from '../../../../assets/password.png';
+import usernameImage from '../../../../assets/username.png';
+import emailImage from '../../../../assets/email.png';
+import phoneNumberImage from '../../../../assets/phoneNumber.png';
+import closedEye from '../../../../assets/closedEye.png'
+import openedEye from '../../../../assets/openedEye.png'
 
-const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, showPassword, autocomplete, passwordValue }) => {
-  const [backgroundColor, setBackgroundColor] = useState<string>(''); // background color for input field indicates valid/invalid input
+const Input: React.FC<InputProps> = ({
+  value,
+  setValue,
+  options,
+  inputType,
+  autocomplete,
+  passwordValue,
+  showLocalError,
+  colors,
+  showLabel
+}) => {
+  const [outlineColor, setOutlineColor] = useState<string>(''); // background color for input field indicates valid/invalid input
   const [error, setError] = useState<string>(''); // a local error message for this input field
+  const [showPassword, setShowPassword] = useState(false);
 
   const inputRef = useRef(null);
 
@@ -33,17 +49,45 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
   const { min, max, regex, errorMessage } = updatedOptions.validation;
 
 
+  const checkInputAvailability = async (value: string) => {
+    if (inputType === 'password' || inputType === 'confirmPassword') return;
+    if (typeof options !== 'object' || !options.checkAvailability) return;
+    try {
+      const response = await fetch(options.checkAvailability, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          [inputType]: value
+        })
+      })
+      const isAvailable = (await response.json()).available;
+      if (!isAvailable) {
+        setError('Username taken');
+        // setOutlineColor('rgb(255, 96, 96)');
+      }
+    } catch (err) {
+      console.log({ err })
+    }
+  }
+
   const onChangeFunction = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
-    setBackgroundColor('');
+    console.log({ inputType })
+    // setOutlineColor('');
     if (inputRef.current.matches('input:invalid')) setError(errorMessage);
-    else setError('');
+    else {
+      setError('');
+      checkInputAvailability(e.target.value);
+    }
   }
 
   const focusOutFunction = () => {
     if (value === '' && required) {
       setError('Required field');
-      setBackgroundColor('rgb(255, 96, 96)');
+      // setOutlineColor('rgb(255, 96, 96)');
     }
   };
 
@@ -54,34 +98,96 @@ const Input: React.FC<InputProps> = ({ value, setValue, options, inputType, show
     }
   }
 
+  const chooseInputImage = (): string => {
+    switch (inputType) {
+      case 'password':
+        return passwordImage
+      case 'confirmPassword':
+        return passwordImage
+      case 'username':
+        return usernameImage
+      case 'email':
+        return emailImage
+      case 'phoneNumber':
+        return phoneNumberImage
+      default:
+        break;
+    }
+  }
+
   return (
-    <div className="form-group">
-      <label htmlFor={inputType}>
-        {label}:
-        <span style={{ color: 'red' }}>
-          {required ? ' *' : ''}
+    <div
+      className='input-group'
+      style={{ paddingBottom: '5px' }}
+    >
+      <style>
+        {`
+        .inputContainer input {
+          color: ${colors.text}
+        }
+        .inputContainer input::placeholder {
+          color: ${colors.textDark};
+          opacity: 0.7
+        }
+        `}
+      </style>
+      <label
+        htmlFor={inputType}
+        style={{ display: 'block' }}
+      >
+        {showLabel && label +': '}
+        <span className='requiredContainer'>
+          {required ? '*' : ''}
         </span>
       </label>
-      <br />
-      <input
-        style={{ backgroundColor }}
-        ref={inputRef}
-        type={type}
-        id={inputType}
-        value={value}
-        onChange={onChangeFunction}
-        onFocus={focusInFunction}
-        onBlur={focusOutFunction}
-        placeholder={placeholder}
-        required={required}
-        autoComplete={autocomplete}
-        minLength={min}
-        maxLength={max}
-        pattern={regex.toString().slice(1, -1)} //remove the delimiters (forward slashes) from regex
-      // onInvalid={(e) => inputRef.current.focus()}
-      />
-      <br />
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+      <div>
+        <div className='inputContainer'
+          style={{
+            border: `1px solid ${colors.primary}`,
+            backgroundColor: colors.primaryLight
+          }}>
+          <img src={chooseInputImage()} className='inputImage' />
+          <input
+            style={{ backgroundColor: colors.primaryLight }}
+            ref={inputRef}
+            type={type}
+            id={inputType}
+            value={value}
+            onChange={onChangeFunction}
+            onFocus={focusInFunction}
+            onBlur={focusOutFunction}
+            placeholder={`${placeholder}`}
+            required={required}
+            autoComplete={autocomplete}
+            minLength={min}
+            maxLength={max}
+            pattern={regex.toString().slice(1, -1)} //remove the delimiters (forward slashes) from regex
+          // onInvalid={(e) => inputRef.current.focus()}
+          />
+          {
+            (inputType === 'password' || inputType === 'confirmPassword') &&
+            <button
+              className='show-password-button'
+              onClick={() => setShowPassword(showPassword ? false : true)}
+            >
+              <img
+                src={showPassword ? closedEye : openedEye}
+                className='inputImage'
+              />
+            </button>
+          }
+        </div>
+      </div>
+      {error && showLocalError &&
+        <div className='auth-local-error'
+          style={{
+            color: colors.error,
+            display: 'block'
+          }}
+        >
+          {error}
+        </div>
+      }
     </div>
   );
 };

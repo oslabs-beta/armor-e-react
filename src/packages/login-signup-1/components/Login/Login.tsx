@@ -2,21 +2,17 @@ import React from "react";
 import Form from "../Form/Form";
 import type { FormProps } from "../../types";
 
-const Login: React.FC<FormProps> = ({
+const Login: React.FC<FormProps> = ({ 
   username,
-  email,
-  password,
-  confirmPassword,
-  phoneNumber,
+  email, 
+  password, 
+  confirmPassword, 
+  phoneNumber, 
   validationChecklist,
   primaryColor,
-  secondaryColor,
-  title,
-  buttonText,
-  textColor,
-  showInputLabels,
-  logoPath
-}) => {  
+  secondaryColor
+}) => {
+
   return (
     <Form
       username={username}
@@ -28,12 +24,7 @@ const Login: React.FC<FormProps> = ({
       validationChecklist={validationChecklist}
       primaryColor={primaryColor}
       secondaryColor={secondaryColor}
-      title={title}
-      buttonText={buttonText}
-      textColor={textColor}
-      showInputLabels={showInputLabels}
-      logoPath={logoPath}
-      />
+    />
   )
 }
 

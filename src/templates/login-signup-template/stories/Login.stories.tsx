@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    email: undefined,
+    email: true,
     password: true,
     phoneNumber: false,
 
@@ -22,10 +22,12 @@ export const Default: Story = {
         "errorMessage": "'uh oh spaghetti o'"
       },
 
-      "required": false
+      "required": false,
+      "checkAvailability": "http://localhost:8080/checkUsername"
     },
 
-    confirmPassword: true,
-    validationChecklist: true
+    validationChecklist: false,
+    logoPath: "static/media/src/assets/logo.png",
+    showInputLabels: true
   }
 };

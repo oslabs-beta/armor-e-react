@@ -8,17 +8,31 @@ const Signup: React.FC<FormProps> = ({
   password, 
   confirmPassword, 
   phoneNumber,
-  validationChecklist 
+  validationChecklist,
+  primaryColor,
+  secondaryColor,
+  title,
+  buttonText,
+  textColor,
+  showInputLabels,
+  logoPath
 }) => {
   return (
     <Form
       username={username}
       email={email}
       password={password}
-      confirmPassword={confirmPassword}
+      confirmPassword={confirmPassword === undefined ? true : confirmPassword}
       phoneNumber={phoneNumber}
       isLogin={false}
       validationChecklist={validationChecklist}
+      primaryColor={primaryColor}
+      secondaryColor={secondaryColor}
+      title={title}
+      buttonText={buttonText}
+      textColor={textColor}
+      showInputLabels={showInputLabels}
+      logoPath={logoPath}
     />
   )
 }

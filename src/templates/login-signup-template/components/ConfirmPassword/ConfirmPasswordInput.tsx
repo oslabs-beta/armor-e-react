@@ -2,7 +2,17 @@ import React from 'react';
 import Input from '../Input/Input';
 import { InputProps } from '../../types';
 
-const ConfirmPasswordInput: React.FC<InputProps> = ({ value, setValue, options, autocomplete, showPassword, passwordValue }) => {
+const ConfirmPasswordInput: React.FC<InputProps> = ({ 
+  value, 
+  setValue, 
+  options, 
+  autocomplete, 
+  showPassword, 
+  passwordValue, 
+  showLocalError ,
+  colors,
+  showLabel
+}) => {
   return (
       <Input
         value={value}
@@ -10,8 +20,10 @@ const ConfirmPasswordInput: React.FC<InputProps> = ({ value, setValue, options, 
         options={options}
         inputType='confirmPassword'
         autocomplete={autocomplete}
-        showPassword={showPassword}
         passwordValue={passwordValue}
+        showLocalError={showLocalError}
+        colors={colors}
+        showLabel={showLabel}
       />
   );
 };

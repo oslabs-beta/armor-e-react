@@ -39,6 +39,7 @@ Login and signup components can be configured to handle input validation, post r
   * **max (number)** - The maximum number of characters for the field
   * **regex (RegExp)** - A regular expression that the field must match
   * **errorMessage (string)** - A message to display when validation fails
+  * **checkAvailability** (string) - A string representing an endpoint. Specify this value to implement realtime username, email, or phone number availability checks. This field has no effect on password or confirm password fields. The value in the input field is sent to endpoint in a JSON object of the form {"inputField": "fieldValue"}
 
 ### Options.[button] [TODO]
 Both log in and sign up components come with a submit button rendered by default. Set submitButton to false to disable. This button will submit a post request to your server if the submit option is enabled. [@TODO If password breach protection is enabled, it will send the password to the haveibeenpwned API before submitting the form data to your server.] [@TODO Oauth buttons can be enabled by ...]

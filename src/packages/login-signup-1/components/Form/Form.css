@@ -1,0 +1,53 @@
+:root {
+  --primary: rgb(70, 70, 252);
+  --secondary: pink;
+}
+
+
+.form-group {
+  padding-bottom: 5px;
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 5px;
+}
+
+.login-signup-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid white;
+  border-radius: 5px;
+  width:fit-content;
+  padding: 10px;
+  height: fit-content;
+  backdrop-filter: blur(10px);
+  align-self: center;
+  justify-self: center;
+  background-color: white;
+  color: blue;
+}
+
+button[type="submit"] {
+  width: 100%;
+  background-image: linear-gradient(30deg, var(--primary), var(--secondary));
+  border-radius: 8px;
+  font-size: 18px;
+}
+
+.inputImage {
+  height: 30px;
+}
+
+input {
+  border-width: 0px;
+}
+
+div:has(.login-signup-container) {
+  display: flex;
+  flex-direction: row;
+  background-image: linear-gradient(30deg, var(--primary), var(--secondary));
+  width: 100%;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}

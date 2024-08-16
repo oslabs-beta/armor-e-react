@@ -2,15 +2,7 @@ import React from 'react';
 import Input from '../Input/Input';
 import { InputProps } from '../../types';
 
-const UsernameInput: React.FC<InputProps> = ({ 
-  value, 
-  setValue, 
-  options, 
-  autocomplete, 
-  showLocalError,
-  colors,
-  showLabel
-}) => {
+const UsernameInput: React.FC<InputProps> = ({ value, setValue, options, autocomplete, showLocalError }) => {
   return (
       <Input
         value={value}
@@ -19,8 +11,6 @@ const UsernameInput: React.FC<InputProps> = ({
         inputType='username'
         autocomplete={autocomplete}
         showLocalError={showLocalError}
-        colors={colors}
-        showLabel={showLabel}
       />
   );
 };

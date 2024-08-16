@@ -25,7 +25,6 @@ export const Default: Story = {
       "required": false
     },
 
-    confirmPassword: true,
     validationChecklist: true
   }
 };

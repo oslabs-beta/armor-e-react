@@ -2,7 +2,15 @@ import React from 'react';
 import Input from '../Input/Input';
 import { InputProps } from '../../types';
 
-const PhoneNumberInput: React.FC<InputProps> = ({ value, setValue, setError, options, autocomplete }) => {
+const PhoneNumberInput: React.FC<InputProps> = ({ 
+  value, 
+  setValue, 
+  options, 
+  autocomplete, 
+  showLocalError,
+  colors,
+  showLabel
+}) => {
   return (
       <Input
         value={value}
@@ -10,6 +18,9 @@ const PhoneNumberInput: React.FC<InputProps> = ({ value, setValue, setError, opt
         options={options}
         inputType='phoneNumber'
         autocomplete={autocomplete}
+        showLocalError={showLocalError}
+        colors={colors}
+        showLabel={showLabel}
       />
   );
 };

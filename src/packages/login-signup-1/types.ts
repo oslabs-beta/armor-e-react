@@ -4,10 +4,9 @@ export interface validationObject {
   min?: number,
   max?: number,
   regex?: RegExp,
-  errorMessage?: string,
+  errorMessage?: string
 }
 export interface InputOptionsObject {
-  checkAvailability?: string
   validation?: validationObject
   required?: boolean,
   placeholder?: string,
@@ -17,20 +16,6 @@ export type InputDefaults = Readonly<{
   [index in inputType]: InputOptionsObject
 }>
 
-export interface colors {
-  primary: string,
-  secondary: string, 
-  text: string,
-  primaryDark: string,
-  secondaryDark: string, 
-  textDark: string,
-  primaryLight: string,
-  secondaryLight: string, 
-  textLight: string,
-  error: string
-
-}
-
 export interface InputProps {
   value: string,
   setValue: (value: string) => void,
@@ -39,9 +24,7 @@ export interface InputProps {
   autocomplete?: string,
   showPassword?: boolean
   passwordValue?: string,
-  showLocalError?: boolean,
-  colors: colors,
-  showLabel?: boolean
+  showLocalError?: boolean
 };
 
 export interface ChecklistItem {
@@ -67,11 +50,6 @@ export interface FormProps {
   phoneNumber?: boolean | InputOptionsObject,
   isLogin?: boolean,
   validationChecklist?: boolean | ValidationChecklist,
-  primaryColor?: string,
-  secondaryColor?: string,
-  title?: string,
-  buttonText?: string,
-  textColor?: string,
-  showInputLabels?: boolean,
-  logoPath?: string
+  primaryColor: string,
+  secondaryColor: string
 };

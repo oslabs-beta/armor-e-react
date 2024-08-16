@@ -1,0 +1,25 @@
+input:focus:valid {
+  background-color: rgb(120, 255, 120);
+}
+input:invalid:not(:placeholder-shown) {
+  background-color: rgb(255, 96, 96);
+}
+input:invalid:focus {
+  background-color: rgb(255, 96, 96);
+}
+input:focus {
+  outline: none;
+}
+
+input {
+  border-style: solid;
+  height: 100%;
+}
+
+.inputContainer {
+  outline: 2px solid black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-radius: 8px;
+}
